@@ -4,9 +4,12 @@
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
 <?rfc symrefs="yes" ?>
-<rfc category="info" ipr="trust200902" docName="draft-lapukhov-segment-routing-large-dc" obsoletes="" updates="" submissionType="IETF" xml:lang="en">
+<rfc category="info" ipr="trust200902"
+    docName="draft-lapukhov-segment-routing-large-dc" obsoletes=""
+    updates="" submissionType="IETF" xml:lang="en">
   <front>
-    <title abbrev="draft-lapukhov-segment-routing-large-dc">Use-cases for segment routing in large-scale data centers</title>
+    <title abbrev="draft-lapukhov-segment-routing-large-dc">Use-cases
+        for segment routing in large-scale data centers</title>
     <author initials="P." surname="Lapukhov" fullname="Petr Lapukhov">
       <organization>Facebook</organization>
       <address>
@@ -33,50 +36,118 @@
         <email>exa@fb.com</email>
       </address>
     </author>  
+    <author initials="G." surname="Nagarajan" fullname="Gaya Nagarajan">
+      <organization>Facebook</organization>
+      <address>
+        <postal>
+          <street>1 Hacker Way</street>
+          <city>Menlo Park</city>
+          <region>CA</region>
+          <code>94025</code>
+          <country>US</country>
+        </postal>
+        <email>gaya@fb.com</email>
+      </address>
+    </author>  
     <date year="2014"/>
     <area>Routing</area>
-	  <workgroup>SPRING</workgroup>
+    <workgroup>SPRING Working Group</workgroup>
     <keyword>Internet Draft</keyword>
     <keyword>Segment Routing</keyword>
     <keyword>Source Routing</keyword>
     <keyword>TCP</keyword>
     <abstract>
       <t>
-        This document discusses ways in which segment routing (aka source routing) paradigm could be leveraged inside the data-center to improve application performance and network reliability. Specifically, it focuses on exposing path visibility to the host's networking stack and leveraging this to address a few well-known performance and reliability problems in data-center networks.
+        This document discusses ways in which segment routing (aka
+        source routing) paradigm could be leveraged inside the
+        data-center to improve application performance and network
+        reliability. Specifically, it focuses on exposing path
+        visibility to the host's networking stack and leveraging this to
+        address a few well-known performance and reliability problems in
+        data-center networks.
       </t>
     </abstract>
   </front>
   <middle>
     <section title="Introduction" anchor="intro" toc="default">
       <t>
-        The source routing princiles decsribed in <xref target="I-D.filsfils-spring-segment-routing" /> allow applications to have fine-grained control over their traffic flow in the network. Traditionally, path selection was performed solely by the network devices, with the end-host only responsible for picking ingress points to the data-center network (selecting first-hop gateways). If the network devices support source-routed instructions of some kind (e.g. encoded in MPLS labels), the end-hosts would benefit from knowing about all possible paths to reach a network destination. This enables the networking stack to route over different paths to the same prefix, based on relative performance of each path, or perform more complex load-distribution, e.g. not necessarily of equal-cost. 
+        The source routing princiles decsribed in <xref
+        target="I-D.filsfils-spring-segment-routing" /> allow
+        applications to have fine-grained control over their traffic
+        flow in the network. Traditionally, path selection was performed
+        solely by the network devices, with the end-host only
+        responsible for picking ingress points to the data-center
+        network (selecting first-hop gateways). If the network devices
+        support source-routed instructions of some kind (e.g. encoded in
+        MPLS labels), the end-hosts would benefit from knowing about all
+        possible paths to reach a network destination. This enables the
+        networking stack to route over different paths to the same
+        prefix, based on relative performance of each path, or perform
+        more complex load-distribution, e.g. not necessarily of
+        equal-cost. 
       </t>
       <t>
-        Source-routing has known trade-offs, such as requiring the hosts to maintain more information about the network and keeping this information up-to-date. These trade-offs need to be considered and addressed when building the actual production system based on source-routed principles. Design of such systems is outside of the scope of this document, which concerns mostly with the use-cases that are possible within source-routed paradigm.
+        Source-routing has known trade-offs, such as requiring the hosts
+        to maintain more information about the network and keeping this
+        information up-to-date. These trade-offs need to be considered
+        and addressed when building the actual production system based
+        on source-routed principles. Design of such systems is outside
+        of the scope of this document, which concerns mostly with the
+        use-cases that are possible within source-routed paradigm.
       </t>
     </section>
-    <section title="Large-scale data center network design summary" toc="default">
+    <section title="Large-scale data center network design summary"
+        toc="default">
       <t>
-        This section provides a brief summary of the informational document <xref target="I-D.ietf-rtgwg-bgp-routing-large-dc" /> that outlines a practical network design suitable for data-centers of various scales.
+        This section provides a brief summary of the informational
+        document <xref target="I-D.ietf-rtgwg-bgp-routing-large-dc" />
+        that outlines a practical network design suitable for
+        data-centers of various scales.
       </t>
       <t>
         <list style="symbols">
           <t>
-            Data-center networks have highly symmetric topologies with multiple parallel paths between two server attachment points. The well-known Clos topology is most popular among the operators. In Clos topology, the number of parallel paths between two elements is determined by the "width" of the middle stage. See <xref target="five_stage_clos" /> below for illustration of the concept.  
+            Data-center networks have highly symmetric topologies with
+            multiple parallel paths between two server attachment
+            points. The well-known Clos topology is most popular among
+            the operators. In Clos topology, the number of parallel
+            paths between two elements is determined by the "width" of
+            the middle stage. See <xref target="five_stage_clos" />
+            below for illustration of the concept.  
           </t>
           <t>
-            Large-scale data-centers commonly use a routing protocol, such as BGP (<xref target="RFC4271"/>) to provide endpoint connectivity. Recovery after a network failure is therefore driven either by local knowledge of directly available backup paths or by distributed signaling between the network devices. 
+            Large-scale data-centers commonly use a routing protocol,
+            such as BGP (<xref target="RFC4271"/>) to provide endpoint
+            connectivity. Recovery after a network failure is therefore
+            driven either by local knowledge of directly available
+            backup paths or by distributed signaling between the network
+            devices. 
           </t>
           <t>
-            Within data-center, networks traffic is load-shared using the Equal Cost Multipath (ECMP) mechanism. With ECMP, every network device implements pseudo-random decision, mapping packets to one of the parallel paths by means of a hash function calculated over certain parts of the packet, typically some packet header fields.
+            Within data-center, networks traffic is load-shared using
+            the Equal Cost Multipath (ECMP) mechanism. With ECMP, every
+            network device implements pseudo-random decision, mapping
+            packets to one of the parallel paths by means of a hash
+            function calculated over certain parts of the packet,
+            typically some packet header fields.
           </t>
         </list>
       </t>
       <t>
-        The following is a schematic of the five-stage Clos topology, with four devices in the middle stage. Notice that number of paths between "DEV A" and "DEV L" equals to four: the paths have to cross all of Tier-1 devices. At the same time, the number of paths between "DEV A" and "DEV B" equals two, and the paths only cross Tier-2 devices. Other topologies are possible, but for simplicity we'll only look into the topologies that have a single path from Tier-1 to Tier-3. The rest could be treated similarly, with a few modifications to the logic.
+        The following is a schematic of the five-stage Clos topology,
+        with four devices in the middle stage. Notice that number of
+        paths between "DEV A" and "DEV L" equals to four: the paths have
+        to cross all of Tier-1 devices. At the same time, the number of
+        paths between "DEV A" and "DEV B" equals two, and the paths only
+        cross Tier-2 devices. Other topologies are possible, but for
+        simplicity we'll only look into the topologies that have a
+        single path from Tier-1 to Tier-3. The rest could be treated
+        similarly, with a few modifications to the logic.
       </t>
-      <figure title="Five-Stage Clos topology" anchor="five_stage_clos" suppress-title="false" align="left" alt="" width="" height="">
-        <artwork xml:space="preserve" name="" type="" align="left" alt="" width="" height="">
+      <figure title="Five-Stage Clos topology" anchor="five_stage_clos"
+          suppress-title="false" align="left" alt="" width="" height="">
+        <artwork xml:space="preserve" name="" type="" align="left"
+            alt="" width="" height="">
                              Tier-1                             
                             +-----+                                 
                             | DEV |                              
@@ -104,97 +175,274 @@
         </artwork>
       </figure>     
     </section>
-    <section title="Some open problems in large data-center networks" toc="default">
+    <section title="Some open problems in large data-center networks"
+        toc="default">
       <t>
-        The data-center network design summarized above provides means for moving traffic between hosts with reasonable efficiency. There are few open performance and reliability problems that arise in such design:
+        The data-center network design summarized above provides means
+        for moving traffic between hosts with reasonable efficiency.
+        There are few open performance and reliability problems that
+        arise in such design:
       </t>
       <t>
         <list style="symbols">
           <t>
-            ECMP routing is most commonly realized per-flow. This means that large, long-lived "elephant" flows may affect performance of smaller, short-lived flows and reduce efficiency of per-flow load-sharing. In other words, per-flow ECMP that does not perform efficiently when flow life-time distribution is heavy-tailed. Furthermore, due to hash-function inefficiencies it is possible to have frequent flow collisions, where more flows get placed on one path over the others.
+            ECMP routing is most commonly realized per-flow. This means
+            that large, long-lived "elephant" flows may affect
+            performance of smaller, short-lived flows and reduce
+            efficiency of per-flow load-sharing. In other words,
+            per-flow ECMP that does not perform efficiently when flow
+            life-time distribution is heavy-tailed. Furthermore, due to
+            hash-function inefficiencies it is possible to have frequent
+            flow collisions, where more flows get placed on one path
+            over the others.
           </t>
           <t>
-            Shortest-path routing with ECMP implements oblivious routing model, which is not aware of the network imbalances. If the network symmetry is broken, for example due to link failures, utilization hotspots may appear. For example, if a link fails between Tier-1 and Tier-2 devices (e.g. "DEV E" and "DEV I"), Tier-3 devices "DEV A" and "DEV B" will not be aware of that, since there are other paths available from perspective of "DEV C". They will continue sending traffic as if the failure didn't exist and may cause a traffic hotspot.
+            Shortest-path routing with ECMP implements oblivious routing
+            model, which is not aware of the network imbalances. If the
+            network symmetry is broken, for example due to link
+            failures, utilization hotspots may appear. For example, if a
+            link fails between Tier-1 and Tier-2 devices (e.g. "DEV E"
+            and "DEV I"), Tier-3 devices "DEV A" and "DEV B" will not be
+            aware of that, since there are other paths available from
+            perspective of "DEV C". They will continue sending traffic
+            as if the failure didn't exist and may cause a traffic
+            hotspot.
           </t>
           <t>
-            Absense of path visiblity leaves transport protocols, such as TCP, with "blackbox" view of the network. Some of TCP metrics, such as SRTT, MSS, CWND and few others could be inferred and cached based on past history, but those apply to destinations, regardless of the path that has been chosen to get there. Thus, for instance, TCP is not capable of remembering "bad" paths, such as those that exhibited poor performance in the past. This means that every new connection will be established obliviously (memory-less) with regards to the paths chosen before, or chosen by other nodes. 
+            Absense of path visiblity leaves transport protocols, such
+            as TCP, with "blackbox" view of the network. Some of TCP
+            metrics, such as SRTT, MSS, CWND and few others could be
+            inferred and cached based on past history, but those apply
+            to destinations, regardless of the path that has been chosen
+            to get there. Thus, for instance, TCP is not capable of
+            remembering "bad" paths, such as those that exhibited poor
+            performance in the past. This means that every new
+            connection will be established obliviously (memory-less)
+            with regards to the paths chosen before, or chosen by other
+            nodes. 
           </t>
           <t>
-            Isolating faults in the network with multiple parallel paths ECMP-based routing is non-trivial due to lack of determinism. Specifically, the connections from host A to host B may take different path every time a new connection is formed, thus making consistent reproduction of a failure much more difficult. This complexity scales linearly with the number of parallel paths in the network, and stems from the random nature of path selection by the network devices.
+            Isolating faults in the network with multiple parallel paths
+            ECMP-based routing is non-trivial due to lack of
+            determinism. Specifically, the connections from host A to
+            host B may take different path every time a new connection
+            is formed, thus making consistent reproduction of a failure
+            much more difficult. This complexity scales linearly with
+            the number of parallel paths in the network, and stems from
+            the random nature of path selection by the network devices.
           </t>         
         </list>
       </t>
       <t>
-        Further in this document, we are going to demonstrate how these problems could be addressed within the framework of source-routing model.
+        Further in this document, we are going to demonstrate how these
+        problems could be addressed within the framework of
+        source-routing model.
       </t>
     </section>
-    <section title="Augmenting the network with segment routing" toc="default">
+    <section title="Augmenting the network with segment routing"
+        toc="default">
       <t>
-        Imagine a data-center network equipped with some kind of segment-routing signaling, e.g. using <xref target="I-D.keyupate-idr-bgp-prefix-sid"/>. The end-hosts in such network may now specify a path for a packet, or a flow, by attaching a segment instruction (e.g. MPLS label stack) to the packet. For instance, when using MPLS data-plane, a label corresponding to the shortest route toward one of the Tier-1 devices could be attached to a packet. The packet would therefore be forced to go across the specific Tier-1 devices, which would pre-determine its end-to-end path inside the data-center given the properties of Clos topology. Note that in this case, the segment-routing directive will be stripped once the packet reaches the Tier-1 device, and remaining forwarding will be done using regular IP lookups.
+        Imagine a data-center network equipped with some kind of
+        segment-routing signaling, e.g. using <xref
+        target="I-D.keyupate-idr-bgp-prefix-sid"/>. The end-hosts in
+        such network may now specify a path for a packet, or a flow, by
+        attaching a segment instruction (e.g. MPLS label stack) to the
+        packet. For instance, when using MPLS data-plane, a label
+        corresponding to the shortest route toward one of the Tier-1
+        devices could be attached to a packet. The packet would
+        therefore be forced to go across the specific Tier-1 devices,
+        which would pre-determine its end-to-end path inside the
+        data-center given the properties of Clos topology. Note that in
+        this case, the segment-routing directive will be stripped once
+        the packet reaches the Tier-1 device, and remaining forwarding
+        will be done using regular IP lookups.
       </t>
       <t>
-        As a result, the hosts become aware of the path that their packets would take. The hosts no longer have to rely on oblivious ECMP hashing in the network to select a random path, but may choose between "deterministic" or "random" routing, where randomness is controlled by the hosts via "random" choice of the segment-routing directives.
+        As a result, the hosts become aware of the path that their
+        packets would take. The hosts no longer have to rely on
+        oblivious ECMP hashing in the network to select a random path,
+        but may choose between "deterministic" or "random" routing,
+        where randomness is controlled by the hosts via "random" choice
+        of the segment-routing directives.
       </t>      
       <t>
-        Note that under this proposal, the segment routing signaling and the corresponding data-plane component "augment" existing IP forwarding mechanisms, but do not necessarily fully replace it. This allows for gradual deployment and testing of the new functionality, with simple rollback strategy. In addition, this allows to keep existing operational procedures, such as those involving shifting traffic on/off the boxes/links and involving routing protocol manipulations.
+        Note that under this proposal, the segment routing signaling and
+        the corresponding data-plane component "augment" existing IP
+        forwarding mechanisms, but do not necessarily fully replace it.
+        This allows for gradual deployment and testing of the new
+        functionality, with simple rollback strategy. In addition, this
+        allows to keep existing operational procedures, such as those
+        involving shifting traffic on/off the boxes/links and involving
+        routing protocol manipulations.
       </t>
     </section>
-    <section title="Communicating path information to the hosts" toc="default">
+    <section title="Communicating path information to the hosts"
+        toc="default">
       <t>
-        There are two general methods for communicating path information to the end-hosts: "proactive" and "reactive", aka "push" and "pull" models. There are multiple ways to implement either of these methods. Here, we note that one way could be using a centralized agent: the agent either tells the hosts of the prefix-to-path mappings beforehands and updates them as needed (network event driven push), or responds to the hosts making request for a path to specific destination (host event driven pull). It is also possible to use a hybrid model, i.e. pushing some state in response to particular network events, while pulling the other state on demand from host.
+        There are two general methods for communicating path information
+        to the end-hosts: "proactive" and "reactive", aka "push" and
+        "pull" models. There are multiple ways to implement either of
+        these methods. Here, we note that one way could be using a
+        centralized agent: the agent either tells the hosts of the
+        prefix-to-path mappings beforehands and updates them as needed
+        (network event driven push), or responds to the hosts making
+        request for a path to specific destination (host event driven
+        pull). It is also possible to use a hybrid model, i.e. pushing
+        some state in response to particular network events, while
+        pulling the other state on demand from host.
       </t>
       <t>
-        We note, that when disseminating network-related data to the end-hosts a tradeoff is made to balance the amount of information vs the level of visibility in the network state. This applies both to push and pull models. In one corner case (complete pull) the host would request path information on each flow, and keep no local state at all. In the other corner case, information for every prefix in the network along with available paths is pushed and continuously updated on all hosts.
+        We note, that when disseminating network-related data to the
+        end-hosts a tradeoff is made to balance the amount of
+        information vs the level of visibility in the network state.
+        This applies both to push and pull models. In one corner case
+        (complete pull) the host would request path information on each
+        flow, and keep no local state at all. In the other corner case,
+        information for every prefix in the network along with available
+        paths is pushed and continuously updated on all hosts.
       </t>
     </section>  
     <section title="Addressing the open problems" toc="default">
       <t>
-        This section demonstrates how the problems describe above could be solved using the segment routing concept. It is worth noting that segment routing signaling and dataplane are only parts of the slution. Additional enhancements, e.g. such as centralized controller mentioned before, and host networking stack support are required to implement the proposed solutions.
+        This section demonstrates how the problems describe above could
+        be solved using the segment routing concept. It is worth noting
+        that segment routing signaling and dataplane are only parts of
+        the slution. Additional enhancements, e.g. such as centralized
+        controller mentioned before, and host networking stack support
+        are required to implement the proposed solutions.
       </t>
       <section title="Per-packet and flowlet switching" toc="default">
         <t>
-          With the ability to choose paths on the host, one may go from per-flow load-sharing in the network to per-packet or per-flowlet (see <xref target="KANDULA04"/> for information on flowlets). The host may select different segment routing instructions either per packet, or per-flowlet, and route them over different paths. This allows for solving the "elephant flow" problem in the data-center and avoding link imabalances.
+          With the ability to choose paths on the host, one may go from
+          per-flow load-sharing in the network to per-packet or
+          per-flowlet (see <xref target="KANDULA04"/> for information on
+          flowlets). The host may select different segment routing
+          instructions either per packet, or per-flowlet, and route them
+          over different paths. This allows for solving the "elephant
+          flow" problem in the data-center and avoding link imabalances.
         </t>
         <t>
-          Note that traditional ECMP routing could be easily simulated with on-host path selection, using method proposed in VL2 (see <xref target="GREENBERG09"/>). The hosts would randomly pick up a Tier-2 or Tier-1 device to "bounce" packet off of, depending on whether the destination is under the same Tier-2 switches, or has to be reached across Tier-1. The host would use hash-function that operates on per-flow invariants, to simulate per-flow load-sharing in the network.
+          Note that traditional ECMP routing could be easily simulated
+          with on-host path selection, using method proposed in VL2 (see
+          <xref target="GREENBERG09"/>). The hosts would randomly pick
+          up a Tier-2 or Tier-1 device to "bounce" packet off of,
+          depending on whether the destination is under the same Tier-2
+          switches, or has to be reached across Tier-1. The host would
+          use hash-function that operates on per-flow invariants, to
+          simulate per-flow load-sharing in the network.
         </t>
       </section>
-      <section title="Performance-aware routing" anchor="perf_routing" toc="default"> 
+      <section title="Performance-aware routing" anchor="perf_routing"
+          toc="default"> 
         <t>
-          Knowing the path associated with flows/packets, the end host may deduce certain characteristics of the path on its own, and additionally use the information supplied with path information pushed from the controller or received via pull request. The host may further share its path observations with the centralized agent, so that the latter may keep up-to-date network health map and assist other hosts with this information.
+          Knowing the path associated with flows/packets, the end host
+          may deduce certain characteristics of the path on its own, and
+          additionally use the information supplied with path
+          information pushed from the controller or received via pull
+          request. The host may further share its path observations with
+          the centralized agent, so that the latter may keep up-to-date
+          network health map and assist other hosts with this
+          information.
         </t>
         <t>
-          For example, in local case, if a TCP flow is pinned to a known path, the hosts may collect information on packet loss, deduced from TCP retransmissions and other signals (e.g. RTT inreases). The host may additionally publish this information to a cerntralized agent, e.g. after a flow completes, or by periodically sampling it. Next, using both local and/or global performance data, the host may pick up the best path for the new flow, or update an existing path (e.g. when informed of congestion on existing path).
+          For example, in local case, if a TCP flow is pinned to a known
+          path, the hosts may collect information on packet loss,
+          deduced from TCP retransmissions and other signals (e.g. RTT
+          inreases). The host may additionally publish this information
+          to a cerntralized agent, e.g. after a flow completes, or by
+          periodically sampling it. Next, using both local and/or global
+          performance data, the host may pick up the best path for the
+          new flow, or update an existing path (e.g. when informed of
+          congestion on existing path).
         </t>   
         <t>
-          One particularly interesting instance of performance-aware routing is dynamic fault-avoidance. If some links or devices in the network start discarding packets due to a fault, the end-hosts would detect the path(s) being affected and steer their flows away from the problem spot. Similar logic applies to failure cases where packets get completely black-holed, e.g. when a link goes down.
+          One particularly interesting instance of performance-aware
+          routing is dynamic fault-avoidance. If some links or devices
+          in the network start discarding packets due to a fault, the
+          end-hosts would detect the path(s) being affected and steer
+          their flows away from the problem spot. Similar logic applies
+          to failure cases where packets get completely black-holed,
+          e.g. when a link goes down.
         </t>
       </section>
       <section title="Non-oblivious routing" toc="default">
         <t>
-          By leveraging source routing, one avoid issues associated with oblivious ECMP hashing. For example, if in the topology depicted on <xref target="five_stage_clos"/> a link between "DEV E" and "DEV I" fails, the hosts may exclude the segment corresponding to "DEV E" from the prefix matching the servers under Tier-2 devices "DEV I" and "DEV K". In the push path discovery model, the affected path mappings may be explicitly pushed to all the servers for the duration of the failure. The new mapping would instruct them to avoid the particular Tier-1 switch until the link has recovered. Alternatively, in pull path discovery model, the centralized agent may start steering new flows immediately after it discovers the issue. Until then, the existing flows may recover using local detection of the path issues, as described in <xref target="perf_routing"/>.
+          By leveraging source routing, one avoid issues associated with
+          oblivious ECMP hashing. For example, if in the topology
+          depicted on <xref target="five_stage_clos"/> a link between
+          "DEV E" and "DEV I" fails, the hosts may exclude the segment
+          corresponding to "DEV E" from the prefix matching the servers
+          under Tier-2 devices "DEV I" and "DEV K". In the push path
+          discovery model, the affected path mappings may be explicitly
+          pushed to all the servers for the duration of the failure. The
+          new mapping would instruct them to avoid the particular Tier-1
+          switch until the link has recovered. Alternatively, in pull
+          path discovery model, the centralized agent may start steering
+          new flows immediately after it discovers the issue. Until
+          then, the existing flows may recover using local detection of
+          the path issues, as described in <xref
+          target="perf_routing"/>.
         </t>
       </section>  
       <section title="Deterministic network probing" toc="default">
         <t>
-          Active probing is a well-known technique for monitoring network elements health, constituting of sending continuous packet streams simulating network traffic to the hosts in the data-center. Segment routing makes possible to prescribe the exact paths that each probe or series of probes would be taking toward their destination. This allows for fast correlation and detection of failed paths, by processing information from multiple actively probing agents. This complements the data collected from the hosts routing stacks as described in <xref target="perf_routing"/> section.
+          Active probing is a well-known technique for monitoring
+          network elements health, constituting of sending continuous
+          packet streams simulating network traffic to the hosts in the
+          data-center. Segment routing makes possible to prescribe the
+          exact paths that each probe or series of probes would be
+          taking toward their destination. This allows for fast
+          correlation and detection of failed paths, by processing
+          information from multiple actively probing agents. This
+          complements the data collected from the hosts routing stacks
+          as described in <xref target="perf_routing"/> section.
         </t>        
         <t>
-          For example, imaging a probe agent sending packets to all machines in the data-center. For every host, it may send packets over each of the possible paths, knowing exactly which links and devices these packets will be crossing. Correlating results for multiple destinations with the topological data, it may automatically isolate possible problem to a link or device in the network.
+          For example, imaging a probe agent sending packets to all
+          machines in the data-center. For every host, it may send
+          packets over each of the possible paths, knowing exactly which
+          links and devices these packets will be crossing. Correlating
+          results for multiple destinations with the topological data,
+          it may automatically isolate possible problem to a link or
+          device in the network.
         </t>
       </section> 
     </section> 
     <section title="Routing traffic outside of data-center" toc="default">
       <t>
-        This document purposely does not discuss the multitude of use cases outside of data center center. However, it is important to note that source routing concept could be used to construct uniform control and data-plane for both data-center and Wide Area Network (WAN). Source routing instruction could be used in the end hosts to direct traffic outside of the datacenter, provided that all elements in the path support the corresponding data-plane instructions. For example, the model proposed in <xref target="I-D.filsfils-spring-segment-routing-central-epe"/> could be implemented under the same network stack modifications that are needed for the data-center use cases. In addition to the edge case, some sort the inter-DC traffic engineering could be realized by programming the end hosts. For illustration, an aggregate prefix for DC2 could be installed in all machines in DC1, enlisting all or some of the available paths (possibly with loose semantic) along with their performance characteristics. The exact algorithm for packet, flowlet or flow mapping to these paths is specific to a particular implementation.
+        This document purposely does not discuss the multitude of use
+        cases outside of data center center. However, it is important to
+        note that source routing concept could be used to construct
+        uniform control and data-plane for both data-center and Wide
+        Area Network (WAN). Source routing instruction could be used in
+        the end hosts to direct traffic outside of the datacenter,
+        provided that all elements in the path support the corresponding
+        data-plane instructions. For example, the model proposed in
+        <xref target="I-D.filsfils-spring-segment-routing-central-epe"/>
+        could be implemented under the same network stack modifications
+        that are needed for the data-center use cases. In addition to
+        the edge case, some sort the inter-DC traffic engineering could
+        be realized by programming the end hosts. For illustration, an
+        aggregate prefix for DC2 could be installed in all machines in
+        DC1, enlisting all or some of the available paths (possibly with
+        loose semantic) along with their performance characteristics.
+        The exact algorithm for packet, flowlet or flow mapping to these
+        paths is specific to a particular implementation.
       </t>
       <t>
-        Furthermore, visibility in the WAN paths allwos the hosts to make more intelligent decisions and realize performance routing or fault avoidance approaches proposed for the data-center network above.
+        Furthermore, visibility in the WAN paths allwos the hosts to
+        make more intelligent decisions and realize performance routing
+        or fault avoidance approaches proposed for the data-center
+        network above.
       </t>
     </section>    
     <section title="Conclusion" toc="default">
       <t>
-        This document summarizes some use cases that segment/source routing model may have in a large-scale data-center. All of these are equally applicable to data-centers regardless of their scale, as long as they support the routing design implementing segment routing signaling. 
+        This document summarizes some use cases that segment/source
+        routing model may have in a large-scale data-center. All of
+        these are equally applicable to data-centers regardless of their
+        scale, as long as they support the routing design implementing
+        segment routing signaling. 
       </t>
     </section>
   </middle>
