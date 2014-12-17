@@ -67,6 +67,14 @@
         data-center networks.
       </t>
     </abstract>
+    <note title="Requirements Language">
+      <t>
+        The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+        NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
+        "OPTIONAL" in this document are to be interpreted as described
+        in <xref target="RFC2119">RFC 2119</xref>.
+      </t>
+    </note>
   </front>
   <middle>
     <section title="Introduction" anchor="intro" toc="default">
@@ -445,8 +453,31 @@
         segment routing signaling. 
       </t>
     </section>
+    <section title="IANA Considerations" toc="default">
+      <t>
+        TBD
+      </t>
+    </section>
+    <section title="Manageability Considerations" toc="default">
+      <t>
+        TBD
+      </t>
+    </section>
+    <section title="Security Considerations" toc="default">
+      <t>
+        TBD
+      </t>
+    </section>
+    <section title="Acknowledgements" toc="default">
+      <t>
+        TBD
+      </t>
+    </section>
   </middle>
   <back>
+    <references title="Normative References">  
+      <?rfc include="reference.RFC.2119.xml"?>
+    </references>
     <references title="Informative References">  
       <?rfc include="reference.RFC.4271.xml"?>
       <?rfc include="reference.I-D.filsfils-spring-segment-routing"?>
