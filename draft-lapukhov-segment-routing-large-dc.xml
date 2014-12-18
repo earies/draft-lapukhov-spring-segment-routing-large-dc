@@ -79,7 +79,7 @@
   <middle>
     <section title="Introduction" anchor="intro" toc="default">
       <t>
-        The source routing princiles decsribed in <xref
+        The source routing principles decscribed in <xref
         target="I-D.filsfils-spring-segment-routing" /> allow
         applications to have fine-grained control over their traffic
         flow in the network. Traditionally, path selection was performed
@@ -118,23 +118,23 @@
             Data-center networks have highly symmetric topologies with
             multiple parallel paths between two server attachment
             points. The well-known Clos topology is most popular among
-            the operators. In Clos topology, the number of parallel
+            the operators. In a Clos topology, the number of parallel
             paths between two elements is determined by the "width" of
             the middle stage. See <xref target="five_stage_clos" />
-            below for illustration of the concept.  
+            below for an illustration of the concept.  
           </t>
           <t>
             Large-scale data-centers commonly use a routing protocol,
-            such as BGP (<xref target="RFC4271"/>) to provide endpoint
+            such as BGPv4 <xref target="RFC4271"/> to provide endpoint
             connectivity. Recovery after a network failure is therefore
             driven either by local knowledge of directly available
             backup paths or by distributed signaling between the network
             devices. 
           </t>
           <t>
-            Within data-center, networks traffic is load-shared using
+            Within data-center networks, traffic is load-shared using
             the Equal Cost Multipath (ECMP) mechanism. With ECMP, every
-            network device implements pseudo-random decision, mapping
+            network device implements a pseudo-random decision, mapping
             packets to one of the parallel paths by means of a hash
             function calculated over certain parts of the packet,
             typically some packet header fields.
@@ -142,7 +142,7 @@
         </list>
       </t>
       <t>
-        The following is a schematic of the five-stage Clos topology,
+        The following is a schematic of a five-stage Clos topology,
         with four devices in the middle stage. Notice that number of
         paths between "DEV A" and "DEV L" equals to four: the paths have
         to cross all of Tier-1 devices. At the same time, the number of
@@ -217,8 +217,8 @@
             hotspot.
           </t>
           <t>
-            Absense of path visiblity leaves transport protocols, such
-            as TCP, with "blackbox" view of the network. Some of TCP
+            Absence of path visiblity leaves transport protocols, such
+            as TCP, with a "blackbox" view of the network. Some TCP
             metrics, such as SRTT, MSS, CWND and few others could be
             inferred and cached based on past history, but those apply
             to destinations, regardless of the path that has been chosen
@@ -231,9 +231,9 @@
           </t>
           <t>
             Isolating faults in the network with multiple parallel paths
-            ECMP-based routing is non-trivial due to lack of
+            and ECMP-based routing is non-trivial due to lack of
             determinism. Specifically, the connections from host A to
-            host B may take different path every time a new connection
+            host B may take a different path every time a new connection
             is formed, thus making consistent reproduction of a failure
             much more difficult. This complexity scales linearly with
             the number of parallel paths in the network, and stems from
@@ -243,7 +243,7 @@
       </t>
       <t>
         Further in this document, we are going to demonstrate how these
-        problems could be addressed within the framework of
+        problems could be addressed within the framework of a
         source-routing model.
       </t>
     </section>
@@ -278,9 +278,9 @@
         the corresponding data-plane component "augment" existing IP
         forwarding mechanisms, but do not necessarily fully replace it.
         This allows for gradual deployment and testing of the new
-        functionality, with simple rollback strategy. In addition, this
+        functionality with a simple rollback strategy. In addition, this
         allows to keep existing operational procedures, such as those
-        involving shifting traffic on/off the boxes/links and involving
+        involving shifting traffic on/off the boxes/links by involving
         routing protocol manipulations.
       </t>
     </section>
@@ -315,7 +315,7 @@
         This section demonstrates how the problems describe above could
         be solved using the segment routing concept. It is worth noting
         that segment routing signaling and dataplane are only parts of
-        the slution. Additional enhancements, e.g. such as centralized
+        the solution. Additional enhancements, e.g. such as centralized
         controller mentioned before, and host networking stack support
         are required to implement the proposed solutions.
       </t>
@@ -327,7 +327,7 @@
           flowlets). The host may select different segment routing
           instructions either per packet, or per-flowlet, and route them
           over different paths. This allows for solving the "elephant
-          flow" problem in the data-center and avoding link imabalances.
+          flow" problem in the data-center and avoiding link imbalances.
         </t>
         <t>
           Note that traditional ECMP routing could be easily simulated
@@ -357,11 +357,11 @@
           path, the hosts may collect information on packet loss,
           deduced from TCP retransmissions and other signals (e.g. RTT
           inreases). The host may additionally publish this information
-          to a cerntralized agent, e.g. after a flow completes, or by
+          to a centralized agent, e.g. after a flow completes, or by
           periodically sampling it. Next, using both local and/or global
           performance data, the host may pick up the best path for the
           new flow, or update an existing path (e.g. when informed of
-          congestion on existing path).
+          congestion on an existing path).
         </t>   
         <t>
           One particularly interesting instance of performance-aware
@@ -375,7 +375,7 @@
       </section>
       <section title="Non-oblivious routing" toc="default">
         <t>
-          By leveraging source routing, one avoid issues associated with
+          By leveraging source routing, one avoids issues associated with
           oblivious ECMP hashing. For example, if in the topology
           depicted on <xref target="five_stage_clos"/> a link between
           "DEV E" and "DEV I" fails, the hosts may exclude the segment
@@ -406,7 +406,7 @@
           as described in <xref target="perf_routing"/> section.
         </t>        
         <t>
-          For example, imaging a probe agent sending packets to all
+          For example, imagine a probe agent sending packets to all
           machines in the data-center. For every host, it may send
           packets over each of the possible paths, knowing exactly which
           links and devices these packets will be crossing. Correlating
@@ -438,7 +438,7 @@
         paths is specific to a particular implementation.
       </t>
       <t>
-        Furthermore, visibility in the WAN paths allwos the hosts to
+        Furthermore, visibility in the WAN paths allows the hosts to
         make more intelligent decisions and realize performance routing
         or fault avoidance approaches proposed for the data-center
         network above.
