@@ -5,11 +5,11 @@
 <?rfc subcompact="no"?>
 <?rfc symrefs="yes" ?>
 <rfc category="info" ipr="trust200902"
-    docName="draft-lapukhov-segment-routing-large-dc" obsoletes=""
+    docName="draft-lapukhov-segment-routing-large-dc-00" obsoletes=""
     updates="" submissionType="IETF" xml:lang="en">
   <front>
-    <title abbrev="draft-lapukhov-segment-routing-large-dc">Use-cases
-        for segment routing in large-scale data centers</title>
+    <title abbrev="draft-lapukhov-segment-routing-large-dc">Use-Cases
+        for Segment Routing in Large-Scale Data Centers</title>
     <author initials="P." surname="Lapukhov" fullname="Petr Lapukhov">
       <organization>Facebook</organization>
       <address>
